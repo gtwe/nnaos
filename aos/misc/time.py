@@ -1,7 +1,7 @@
 import time
 
 
-class Timer():
+class Timer:
     """
     Usage as context manager: :
 
@@ -15,6 +15,7 @@ class Timer():
         timer.stop()
 
     """
+
     def __init__(self, start=True):
 
         if start:

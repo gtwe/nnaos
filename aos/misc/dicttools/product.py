@@ -56,7 +56,8 @@ def _bubble_up(d, group):
     d_overwrites = [
         # [(key, v) for v in value.items]
         ((k, v) for k, v in zip(itertools.repeat(key), value.items))
-        for key, value in d.items() if isinstance(value, Product) and value.group == group
+        for key, value in d.items()
+        if isinstance(value, Product) and value.group == group
     ]
     d_overwrites = map(dict, zip(*d_overwrites))
     ds = [{**copy.deepcopy(d), **do} for do in d_overwrites]
@@ -83,8 +84,9 @@ def _resolve_group(d, group):
 
     return _bubble_up(d, group)
 
+
 def resolve_group(ds, group):
-    """"
+    """ "
     Same as `resolve` restricted to the given group.
     """
     if type(ds) is dict:
@@ -209,8 +211,7 @@ def resolve(ds):
 
     try:
 
-        group = next(iter(itertools.chain(*(_find_product(d)
-                                            for d in ds)))).group
+        group = next(iter(itertools.chain(*(_find_product(d) for d in ds)))).group
         ds = resolve_group(ds, group)
 
         return resolve(ds)
@@ -263,8 +264,8 @@ def get_keys(d, keys=None, path=''):
 
     for key, value in d.items():
         if isinstance(value, Product):
-            keys.append(path+key)
+            keys.append(path + key)
         elif type(value) is dict:
-            keys += get_keys(value, keys=[], path=path+key+'.')
+            keys += get_keys(value, keys=[], path=path + key + '.')
 
     return keys

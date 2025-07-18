@@ -1,5 +1,6 @@
 from collections import abc
 
+
 # Alternative Implementation:
 #
 # Inherit form abc.Mapping to ensure that this class is a
@@ -104,6 +105,7 @@ def cn_dict(d: dict) -> CDict:
 
     return CDict(d)
 
+
 #
 # Alternative Implementation of CDict.
 #
@@ -131,6 +133,7 @@ class ClassFromDict(abc.Mapping):
 
 
     """
+
     """
     Recursively transforms a dictionary to a class.
 
@@ -176,6 +179,7 @@ class ClassFromDict(abc.Mapping):
     a 2
 
     """
+
     def __init__(self, d: dict):
 
         raise DeprecationWarning()

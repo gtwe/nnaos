@@ -32,21 +32,33 @@ def make_parser(*args):
 
         if arg == 'fast':
             parser.add_argument(
-                '-f', '--fast', help='Execute a fast test version of the script', action='store_true')
+                '-f',
+                '--fast',
+                help='Execute a fast test version of the script',
+                action='store_true',
+            )
 
         elif arg == 'plot':
-            parser.add_argument('-p', '--no-plot',
-                                help='Suppress plots', action='store_true')
+            parser.add_argument(
+                '-p', '--no-plot', help='Suppress plots', action='store_true'
+            )
 
         elif arg == 'tensorboard':
-            parser.add_argument('-t', '--no-tensorboard',
-                                help='No Tensorboard logging', action='store_true')
-
+            parser.add_argument(
+                '-t',
+                '--no-tensorboard',
+                help='No Tensorboard logging',
+                action='store_true',
+            )
 
         elif isinstance(arg, Name):
             parser.add_argument(arg.name, help=f'Provide {arg.name}')
 
         elif isinstance(arg, NameOrAbbrev):
-            parser.add_argument(arg.name, help=f'Provide {arg.name} or abbreviation in {list(arg.abbrevs)}', type=arg.expand)
+            parser.add_argument(
+                arg.name,
+                help=f'Provide {arg.name} or abbreviation in {list(arg.abbrevs)}',
+                type=arg.expand,
+            )
 
     return parser

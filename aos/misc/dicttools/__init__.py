@@ -6,6 +6,7 @@ from .product import Product, product_idx
 from .cdict import CDict, cn_dict
 from .eval import Eval
 
+
 def resolve(d: dict) -> CDict:
     """
     Resolve `Product`, `Eval` and transer to class.

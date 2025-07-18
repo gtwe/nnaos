@@ -6,12 +6,7 @@ class TestProduct(unittest.TestCase):
 
     def test_copy_subdicts(self):
 
-        d = {
-            'subdict': {
-                'a': 0
-            },
-            'b': dicttools.Product([0, 1])
-        }
+        d = {'subdict': {'a': 0}, 'b': dicttools.Product([0, 1])}
         ds = dicttools.product.resolve(d)
 
         # Each product element should contain an independent

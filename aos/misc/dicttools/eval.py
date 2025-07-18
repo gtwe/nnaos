@@ -124,7 +124,7 @@ def _resolve(d_path, recurse_type):
                 needs_rerun = True
 
         if type(value) is recurse_type:
-            _resolve(d_path+[value], recurse_type)
+            _resolve(d_path + [value], recurse_type)
 
     if needs_rerun:
         _resolve([d_root], recurse_type)
@@ -149,15 +149,16 @@ def _eval(func, d_path):
         see `Eval` for details.
     """
     signature = inspect.signature(func)
-    assert len(
-        signature.parameters) == 1, "Error: Eval resolution requires functions in one argument."
+    assert (
+        len(signature.parameters) == 1
+    ), "Error: Eval resolution requires functions in one argument."
     arg_name = next(iter(signature.parameters.keys()))
 
     # In all function evaluations, we wrap the dictionary
     # in _EvalDict, to throw an _ValueIsEvalError if
     # the function evaluation refers to an unevaluated `Eval.`
 
-    if arg_name == len(arg_name)*'_':
+    if arg_name == len(arg_name) * '_':
         up = len(arg_name)
         return func(_eval_dict(d_path[-up]))
     elif arg_name == 'r':

@@ -32,10 +32,16 @@ class TestArgs(unittest.TestCase):
 
     def test_name_or_abbrev(self):
 
-        parser = cargs.make_parser(cargs.NameOrAbbrev('module', 'test.', {
-            ':default': 'default_module',
-            ':fast': 'fast_module',
-        }))
+        parser = cargs.make_parser(
+            cargs.NameOrAbbrev(
+                'module',
+                'test.',
+                {
+                    ':default': 'default_module',
+                    ':fast': 'fast_module',
+                },
+            )
+        )
         args = parser.parse_args(['test.module'])
         self.assertEqual(args.module, 'test.module')
 
