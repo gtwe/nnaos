@@ -43,6 +43,8 @@ which contains minimal LaTeX code for the tables in the paper.
 Within `tables` is the skeleton code for the tables themselves in the paper.
 This LaTeX code references the .tex files in the `tex` folder of the four experiments
 of dimension 3 (dim3dep2_kernel, dim3dep2_mse, dim3dep5_kernel, dim3dep5_mse).
+Note, these experiment directories will only be created by running their
+respective `plotter.py` script, which relies upon the full experiment being ran.
 
 ## Experiments and Example
 
