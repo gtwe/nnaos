@@ -58,7 +58,7 @@ to generate the plots in the paper.
 | dim3dep5_kernel    | Depth 5 FCNN, x in R^3, varies over width and number of samples, trained with kernel loss |
 | dim3dep5_mse       | Depth 5 FCNN, x in R^3, varies over width and number of samples, trained with MSE loss |
 | dim7dep2_big_batch_mse | Depth 2 FCNN, x in R^7, varies over many different widths and over a large number of samples, trained with MSE loss |
-| testing | Example experiment, used to test the code and run on a single machine |
+| example | Example experiment, used to test the code and run on a single machine |
 
 A Makefile is provided to run the 'example' experiment, by executing `make example`.
 
