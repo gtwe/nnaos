@@ -79,11 +79,10 @@ class Experiment:
 
 
 def mkdirs(expname):
-    directories = ["params", "plots", "results"]
-    base_path = f"./experiments/rates/checkpoints/{expname}"
+    directories = ["params", "results"]
 
     for dir in directories:
-        os.makedirs(f"{base_path}/{dir}", exist_ok=True)
+        os.makedirs(f"{dir}", exist_ok=True)
 
 
 def writeparams(expname, nets, common, loc=None):
@@ -127,4 +126,5 @@ if __name__ == "__main__":
     expname = exp.get_expname()
     nets, common = exp.get_params()
     print(f"Writing params for {expname}")
+    mkdirs(expname)
     exp_nums = writeparams(expname, nets, common)
