@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage{csvsimple}
+\usepackage{amsmath, amssymb}
+\usepackage{adjustbox}
+
+\newcommand{\Is}{N}
+
+\begin{document}
+
+\begin{adjustbox}{angle=90}
+    \begin{tabular}{|c|cccc|cccc|cccc|}
+        \hline
+        & \multicolumn{12}{c|}{\bf Dimension 3 and Depth 2 -- Trained with MSE Loss} \\ \hline
+        & \multicolumn{4}{c|}{\bf Test Loss} 
+        & \multicolumn{4}{c|}{\bf dof rate}
+        & \multicolumn{4}{c|}{\bf $N$ rate} \\ \hline
+        {\bf dof$/\boldsymbol{\Is}$} % & 100 & 150 & 200 & 250 \\ \hline
+        \input{../dim3dep2_mse/tex/dof samples row.tex} \\
+        \hline
+        \hline
+        & \multicolumn{12}{c|}{\bf Dimension 3 and Depth 5 -- Trained with MSE Loss} \\ \hline
+        & \multicolumn{4}{c|}{\bf Test Loss} 
+        & \multicolumn{4}{c|}{\bf dof rate}
+        & \multicolumn{4}{c|}{\bf $N$ rate} \\ \hline
+        {\bf dof$/\boldsymbol{\Is}$} % & 100 & 150 & 200 & 250 \\ \hline
+        \input{../dim3dep5_mse/tex/dof samples row.tex} \\
+        \hline
+        \hline
+        & \multicolumn{12}{c|}{\bf Dimension 3 and Depth 2 -- Trained with Kernel Loss} \\ \hline
+        & \multicolumn{4}{c|}{\bf Test Loss} 
+        & \multicolumn{4}{c|}{\bf dof rate}
+        & \multicolumn{4}{c|}{\bf $N$ rate} \\ \hline
+        {\bf dof$/\boldsymbol{\Is}$} % & 100 & 150 & 200 & 250 \\ \hline
+        \input{../dim3dep2_kernel/tex/dof samples row.tex} \\
+        \hline
+        \hline
+        & \multicolumn{12}{c|}{\bf Dimension 3 and Depth 5 -- Trained with Kernel Loss} \\ \hline
+        & \multicolumn{4}{c|}{\bf Test Loss} 
+        & \multicolumn{4}{c|}{\bf dof rate}
+        & \multicolumn{4}{c|}{\bf $N$ rate} \\ \hline
+        {\bf dof$/\boldsymbol{\Is}$} % & 100 & 150 & 200 & 250 \\ \hline
+        \input{../dim3dep5_kernel/tex/dof samples row.tex} \\
+        \hline
+    \end{tabular}
+\end{adjustbox}
+
+\end{document}

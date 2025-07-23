@@ -1,10 +1,12 @@
+import os
 import numpy as np
+import pandas as pd
 
 # import scipy.stats as sstat
 import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
-import sparse.data.data_fun as data
+import aos.data.data_fun as data
 
 
 def tnp(tensor):
@@ -96,3 +98,186 @@ def plot_breakpoints(module, target_fn, domain=(-1, 1)):
         plot_breakpoints_2d(ax, module, target_fn, domain)
 
     return fig
+
+
+def loss_surface(df, expname, param, savedir=None, losstype=None):
+    print(f'Plotting {losstype} loss surface against samples by DOF')
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    ax.view_init(30, 30)
+    ax.tick_params(axis='x', labelrotation=-5, pad=0)
+    ax.tick_params(axis='y', labelrotation=10)
+    ax.tick_params(axis='z', pad=10)
+
+    if param == "dof":
+        ax.set_xlabel('DOF', labelpad=2, rotation=45)
+        xticks = np.log(df.dof.unique())
+        xtick_labels = df.dof.unique()
+    elif param == "width":
+        ax.set_xlabel('Width', labelpad=2, rotation=45)
+        xticks = np.log(df.width.unique())
+        xtick_labels = df.width.unique()
+
+    ax.set_ylabel('Samples', labelpad=10)
+    ax.set_zlabel('Loss', labelpad=13, rotation=90)
+
+    yticks = np.log(df.samples.unique())
+
+    color = "magma_r"
+
+    if losstype == "Test":
+        zticks = np.log(df.test_loss.unique())
+        zscaling = np.linspace(
+            np.log(df.test_loss.min()), np.log(df.test_loss.max()), 6
+        )
+        surf = ax.plot_trisurf(
+            np.log(df.dof if param == "dof" else df.width),
+            np.log(df.samples),
+            np.log(df.test_loss),
+            cmap=color,
+            linewidth=10,
+            antialiased=True,
+        )
+    elif losstype == "Train":
+        zticks = np.log(df.loss.unique())
+        zscaling = np.linspace(np.log(df.loss.min()), np.log(df.loss.max()), 6)
+        surf = ax.plot_trisurf(
+            np.log(df.dof if param == "dof" else df.width),
+            np.log(df.samples),
+            np.log(df.loss),
+            cmap=color,
+            linewidth=10,
+            antialiased=True,
+        )
+
+    ax.set_xticks(xticks)
+    ax.set_yticks(yticks)
+    ax.set_zticks(zscaling)
+
+    ax.set_yticklabels(df.samples.unique())
+    ax.set_zticklabels([f"{np.exp(z): .3}" for z in zscaling])
+
+    plt.savefig(
+        f"{savedir}/{losstype}_surface_{param}.pdf", bbox_inches="tight", pad_inches=0.2
+    )
+
+
+def average_runs(df):
+    df['test_loss'] = df.test_loss_history.apply(lambda x: x[-1])
+
+    averaged_df_dof = (
+        df.groupby(['id', 'dof', 'samples', 'dim', 'lr'])
+        .agg({'loss': 'mean', 'test_loss': 'mean'})
+        .reset_index()
+    )
+
+    averaged_df_width = (
+        df.groupby(['id', 'width', 'samples', 'dim', 'lr'])
+        .agg({'loss': 'mean', 'test_loss': 'mean'})
+        .reset_index()
+    )
+
+    return averaged_df_dof, averaged_df_width
+
+
+def large_loss_surface(df, expname, param, savedir=None, losstype=None):
+    print(f'Plotting {losstype} loss surface against samples by {param}')
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    ax.view_init(30, 30)
+
+    ax.set_ylabel('Samples', labelpad=10)
+    ax.set_zlabel('Loss', labelpad=13, rotation=90)
+
+    ax.tick_params(axis='x', labelrotation=-5, pad=0)
+    ax.tick_params(axis='y', labelrotation=10)
+    ax.tick_params(axis='z', pad=10)
+
+    if param == "dof":
+        xticks = np.log(df.dof.unique())
+        ax.set_xlabel('DOF', labelpad=2, rotation=45)
+
+    elif param == "width":
+        xticks = np.log(df.width.unique())
+        ax.set_xlabel('Width', labelpad=2, rotation=45)
+
+    yticks = np.log(df.samples.unique())
+
+    color = "magma_r"
+
+    if losstype == "Test":
+        zticks = np.log(df.test_loss.unique())
+        zscaling = np.linspace(
+            np.log(df.test_loss.min()), np.log(df.test_loss.max()), 6
+        )
+        surf = ax.plot_trisurf(
+            np.log(df.width if param == "width" else df.dof),
+            np.log(df.samples),
+            np.log(df.test_loss),
+            cmap=color,
+            linewidth=10,
+            antialiased=True,
+        )
+    elif losstype == "Train":
+        zticks = np.log(df.loss.unique())
+        zscaling = np.linspace(np.log(df.loss.min()), np.log(df.loss.max()), 6)
+        surf = ax.plot_trisurf(
+            np.log(df.width if param == "width" else df.dof),
+            np.log(df.samples),
+            np.log(df.loss),
+            cmap=color,
+            linewidth=10,
+            antialiased=True,
+        )
+
+    xidx = [0, 4, 12, 28]
+    yidx = [0, 4, 9, 14]
+
+    ax.set_xticks(xticks[xidx])
+    ax.set_yticks(yticks[yidx])
+    ax.set_zticks(zscaling)
+
+    xtickslabels = (
+        df.width.unique()[xidx] if param == "width" else df.dof.unique()[xidx]
+    )
+    ytickslabels = df.samples.unique()[yidx]
+
+    ax.set_xticklabels(xtickslabels)
+    ax.set_yticklabels(ytickslabels)
+    ax.set_zticklabels([f"{np.exp(z): .3}" for z in zscaling])
+
+    plt.savefig(
+        f"{savedir}/{losstype}_surface_{param}.pdf", bbox_inches="tight", pad_inches=0.2
+    )
+
+
+def exp_plotter(expname):
+    df = pd.read_pickle("./results/df.pkl")
+    savedir = f"../../reports/{expname}/plots"
+    os.makedirs(savedir, exist_ok=True)
+    averaged_df_dof, averaged_df_width = average_runs(df)
+
+    if len(df.width.unique()) > 5:
+        large_loss_surface(
+            averaged_df_dof, expname, "dof", savedir=savedir, losstype="Train"
+        )
+        large_loss_surface(
+            averaged_df_width, expname, "width", savedir=savedir, losstype="Train"
+        )
+        large_loss_surface(
+            averaged_df_dof, expname, "dof", savedir=savedir, losstype="Test"
+        )
+        large_loss_surface(
+            averaged_df_width, expname, "width", savedir=savedir, losstype="Test"
+        )
+    else:
+        loss_surface(averaged_df_dof, expname, "dof", savedir=savedir, losstype="Train")
+        loss_surface(
+            averaged_df_width, expname, "width", savedir=savedir, losstype="Train"
+        )
+        loss_surface(averaged_df_dof, expname, "dof", savedir=savedir, losstype="Test")
+        loss_surface(
+            averaged_df_width, expname, "width", savedir=savedir, losstype="Test"
+        )

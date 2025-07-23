@@ -7,7 +7,7 @@ def train_loop(
     network: torch.nn.Module,
     dataloader: torch.utils.data.DataLoader,
     optimizer: torch.optim.Optimizer,
-    loss_fn: typing.Callable[[torch.Tensor, torch.Tensor], None],
+    train_loss_fn: typing.Callable[[torch.Tensor, torch.Tensor], None],
     callback_fn: typing.Callable[[dict], None],
 ) -> None:
     """
@@ -16,7 +16,17 @@ def train_loop(
     for batch, (x, y) in enumerate(dataloader):
 
         pred = network(x)
-        loss = loss_fn(pred, y)
+        if len(x.shape) == 3:
+            # Usual case
+            # (n_samples, 1, dim)
+            loss = train_loss_fn()(pred, y)
+        if len(x.shape) == 4:
+            # Kernel loss
+            # (n_samples, 1, dim, kernel_size)
+            loss = torch.mean(
+                pred - y, dim=1
+            )  # average residual across column in kernel
+            loss = torch.mean(loss**2)
 
         optimizer.zero_grad()
         loss.backward()
@@ -28,6 +38,7 @@ def train_loop(
 def test_loop(
     network: torch.nn.Module,
     dataloader: torch.utils.data.DataLoader,
+    test_loss_fn: typing.Callable[[torch.Tensor, torch.Tensor], None],
     callback_fn: typing.Callable[[dict], None],
 ) -> None:
     """
@@ -36,4 +47,5 @@ def test_loop(
     with torch.no_grad():
         for batch, (x, y) in enumerate(dataloader):
             pred = network(x)
-            callback_fn((x, y), {'pred': pred})
+            loss = test_loss_fn()(pred, y)
+            callback_fn((x, y), {'loss': loss, 'pred': pred})

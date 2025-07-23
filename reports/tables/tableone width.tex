@@ -1,0 +1,27 @@
+ 
+\documentclass{article}
+\usepackage{csvsimple}
+\usepackage{amsmath, amssymb}
+
+\newcommand{\Is}{N}
+
+\begin{document}
+
+    \begin{tabular}{|c|cccc|cccc|cccc|}
+        \hline
+        & \multicolumn{8}{c|}{\bf Dimension 3 and Depth 5 -- Trained with MSE Loss} \\ \hline
+        & \multicolumn{4}{c|}{\bf $m$ rate} 
+        & \multicolumn{4}{c|}{\bf $N$ rate} \\ \hline
+        {\bf $\boldsymbol{m}/\boldsymbol{\Is}$} % & 100 & 150 & 200 & 250 \\ \hline
+        \input{../dim3dep5_mse/tex/width samples quad.tex} \\
+        \hline
+        \hline
+        & \multicolumn{8}{c|}{\bf Dimension 3 and Depth 5 -- Trained with Kernel Loss} \\ \hline
+        & \multicolumn{4}{c|}{\bf $m$ rate} 
+        & \multicolumn{4}{c|}{\bf $N$ rate} \\ \hline
+        {\bf $\boldsymbol{m}/\boldsymbol{\Is}$} % & 100 & 150 & 200 & 250 \\ \hline
+        \input{../dim3dep5_kernel/tex/width samples quad.tex} \\
+        \hline
+    \end{tabular}
+
+\end{document}

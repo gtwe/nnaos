@@ -38,9 +38,11 @@ class SummaryWriterMock:
     Tensorboard class `SummaryWriter`. It can be used as a
     replacement to directly show logged results on screen
     instead of storing to disk.
+
+    Ben Keene: Accepts a fake log_dir to match the SummaryWriter interface.
     """
 
-    def __init__(self, plot=True):
+    def __init__(self, plot=True, write=False, log_dir=None):
 
         self.plot = plot
         self.figures = {}

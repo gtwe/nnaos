@@ -73,3 +73,29 @@ class DataCubeGrid(DataFun):
 
         dim = len(grid)
         return torch.stack(grid, dim=-1).reshape([-1, 1, dim])
+
+
+class KernelDataCubeRandom(DataFun):
+    def __init__(
+        self,
+        n_samples: int,
+        dim: int = 1,
+        target_fn=None,
+        domain: Tuple[float, float] = (-1.0, 1.0),
+        kernel_size: int = 5,
+        sigma: float = 1e-9,
+    ):
+
+        self.data = DataCubeRandom.sample(n_samples, dim, domain)
+        assert self.data.shape == (n_samples, 1, dim)
+
+        self.data = self.data[:, None, :, :]
+        self.data = torch.tile(self.data, dims=(1, kernel_size, 1, 1))
+        self.data = torch.normal(mean=self.data, std=sigma)
+
+        super().__init__(target_fn)
+
+        self.n_samples = n_samples
+        self.dim = dim
+        self.kernel_size = kernel_size
+        self.sigma = sigma
